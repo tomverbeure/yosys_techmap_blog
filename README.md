@@ -7,8 +7,8 @@ To run the scripts:
 * Install [Yosys](https://github.com/YosysHQ/yosys).
 * Run:
 
-    ```sh
+```sh
 yosys -s mul.yosys
 yosys -s add_reduce.yosys
-    ```
+```
 
