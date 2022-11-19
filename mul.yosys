@@ -1,0 +1,32 @@
+
+read_verilog mul.v
+hierarchy -top top
+clean -purge
+write_rtlil mul.0.rtlil
+show -width -signed -pause
+show -width -signed -format png -prefix mul_rtlil
+synth_ice40 -dsp
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix mul_ice40
+write_rtlil mul.1.rtlil
+
+delete
+
+read_verilog mul.v
+hierarchy -top top
+clean -purge
+techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=16 -D DSP_B_MAXWIDTH=16 -D DSP_A_MINWIDTH=2 -D DSP_B_MINWIDTH=2 -D DSP_Y_MINWIDTH=11 -D DSP_NAME=$__MUL16X16
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix mul_mul2dsp
+
+delete
+
+read_verilog mul.v
+hierarchy -top top_large
+clean -purge
+techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=16 -D DSP_B_MAXWIDTH=16 -D DSP_A_MINWIDTH=2 -D DSP_B_MINWIDTH=2 -D DSP_Y_MINWIDTH=11 -D DSP_NAME=$__MUL16X16
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix mul_mul2dsp_large

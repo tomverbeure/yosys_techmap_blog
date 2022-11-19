@@ -1,0 +1,76 @@
+
+read_verilog add.v
+hierarchy -top top_unsigned
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix add
+write_rtlil  top_unsigned.0.rtlil
+write_cxxrtl top_unsigned.0.cc
+
+delete
+
+read_verilog add.v
+hierarchy -top top_unsigned
+wreduce
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix add_wreduce
+write_cxxrtl top_unsigned_wreduce.cc
+
+delete
+
+read_verilog add.v
+hierarchy -top top_unsigned
+
+debug techmap -max_iter 1 -map add_reduce.v -D Y_MIN_WIDTH=32
+
+show -width -signed -pause
+show -width -signed -format png -prefix add_swap_unclean
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix add_swap_clean
+
+write_rtlil  top_unsigned.1.rtlil
+write_cxxrtl top_unsigned.1.cc
+
+delete
+
+read_verilog add.v
+hierarchy -top top_unsigned
+
+debug techmap -map add_reduce.v -D Y_MIN_WIDTH=32 
+show -width -signed -pause
+show -width -signed -format png -prefix add_reduce_unclean
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix add_reduce
+
+write_rtlil  top_unsigned.2.rtlil
+write_cxxrtl top_unsigned.2.cc
+
+delete
+
+read_verilog add.v
+hierarchy -top top_unsigned10
+rename top_unsigned10 top_unsigned
+copy top_unsigned top_unsigned_gold
+select top_unsigned
+
+show -width -signed -pause
+show -width -signed -format png -prefix add10_gold
+
+debug techmap -map add_reduce.v -D Y_MIN_WIDTH=8 
+show -width -signed -pause
+show -width -signed -format png -prefix add10_reduce_unclean
+clean -purge
+show -width -signed -pause
+show -width -signed -format png -prefix add10_reduce
+
+equiv_make top_unsigned_gold top_unsigned top_equiv
+select top_equiv
+show -width -signed -pause
+show -width -signed -format png -prefix add10_equiv_make
+
+equiv_simple
+equiv_status -assert
+
