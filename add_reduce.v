@@ -31,7 +31,7 @@ module add_reduce (A, B, Y);
             // Can't make Y smaller than a predefined size.
             wire _TECHMAP_FAIL_ = 1;    
         end
-        else if (Y_WIDTH < A_WIDTH+1) begin
+        else if (Y_WIDTH <= A_WIDTH+1) begin
             // Output is already at minimal size.
             wire _TECHMAP_FAIL_ = 1;    
         end
